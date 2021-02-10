@@ -1,0 +1,42 @@
+
+
+
+
+
+4  6 10
+14 15 17 19 25 27 28 29 35 37 45 46
+
+
+
+
+        List<IndicatorRegisterCacheDTO> registerCacheDTOList = Lists.newArrayList();
+        CollectionUtils.emptyIfNull(operationIndicatorCacheService
+                .getIndicatorItemListByPreIndicator(context.getCode().getIndicatorId()))
+                .stream().forEach(dto -> {
+                    if ((dto.getRegisterCount() > 0) && (StringUtils.isNotBlank(dto.getTemplateParam())
+                            // 匹配上一级类目或者2级类目
+                            && (
+                            Objects.equals(dto.getTemplateParam(), String.valueOf(locationInfo.getFirstCategoryId()))
+                                    || Objects.equals(dto.getTemplateParam(),
+                                    String.valueOf(locationInfo.getSecondCategoryId()))))) {
+                        List<IndicatorRegisterCacheDTO> list = operationIndicatorCacheService
+                                .getIndicatorRegisterList(dto.getIndicatorId(), context.getUserId());
+                        if (CollectionUtils.isNotEmpty(list)) {
+                            registerCacheDTOList.add((IndicatorRegisterCacheDTO) list);
+                        }
+                    }
+                });
+        if (CollectionUtils.isEmpty(registerCacheDTOList)) {
+            return;
+        }
+
+
+1. 上线之前  删除log
+2. 去掉poi对三级类目支持
+
+设计consumer
+photoUpload
+GameChange
+photoLike
+photoCommenAdd
+        

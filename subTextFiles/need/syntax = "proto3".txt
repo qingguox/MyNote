@@ -1,0 +1,94 @@
+syntax = "proto3";
+
+package kuaishou.flow.fanstop;
+
+option java_package = "com.kuaishou.protobuf.flow.fanstop";
+
+import "common/common_request_response.proto";
+
+message FlowCreateFansTopOrderRequest {
+  oneof user_or_photo {
+      uint64 photo_id = 1;
+      uint64 user_id = 2;
+  }
+  string unique_id = 3;                 //全局唯一
+  AppType app_type = 4;                // appType，0：主站 1：极速版 2：设置版
+  oneof page {
+    uint64 explore_show_count = 5;       // 发现页购买曝光量   [1000, 2000000]
+    uint64 nearby_show_count = 6;        // 同城页购买曝光量   [1000, 2000000]
+    bool buy_follow_page = 7;            // 是否购买关注页置顶
+  }
+  uint32 repeat_cnt = 8;               // 重复订单数, 默认是1
+  bool send_audit_reject_msg = 9;      // 是否给被买人发送订单审核拒绝消息
+  bool send_audit_pass_msg = 10;       // 是否给被买人发送订单审核通过消息
+  uint64 kuaishou_id = 11;             // 发送通知快手账号
+  uint64 budget_org_id = 12;           // 预算组织ID     必填
+  uint64 budget_activity_id = 13;      // 预算活动ID     必填
+  string creator = 14;                 // 创建人         必填
+  uint64 contract_create_time = 15;    // 任务创建时间
+  string biz_name = 16;                // 订单来源       必填
+
+  enum AppType {
+    KUAISHOU = 0;
+    KUAISHOU_NEBULA = 1;
+    KUAISHOU_THANOS = 2;
+  }
+}
+
+
+enum BizName {
+  UNKNOWN = 0;
+  ACTIVITY_PLATFORM = 1;
+}
+
+
+message FlowCreateFansTopOrderResponse {
+  uint64 order_id = 1;
+  string unique_id = 2;
+  ResponseCode code = 3;
+  enum ResponseCode {
+      UNKNOWN = 0;
+      SUCCESS = 1;
+      NO_ACCOUNT = 2;
+      INVALID_PARAM= 3;
+  }
+}
+
+
+message FlowFansTopOrderStat {
+   uint64 order_id = 1;
+   string unique_id = 2;
+   uint64 target_id = 3;
+   uint64 create_time = 4;
+   uint64 show_count = 5;
+   uint64 cost_fen = 6;
+   LaunchType type = 7;
+   uint64 timestamp = 8;
+   string remark = 9;
+
+   enum LaunchType {
+     UNKNOWN = 0;
+     USER = 1;
+     PHOTO = 2;
+   }
+}
+
+message FlowFansTopCpmResponse {
+  map<int32, AppCpmInfo> result = 1;    // key AppType对应的value， value ： cpm 单位分
+
+  message AppCpmInfo {
+    map<int32, double> app_cpm = 1;
+  }
+}
+
+enum FlowFansTopPageType {
+  UNKNOWN_PAGE = 0;
+  EXPLORE_PAGE = 1;
+  NEARBY_PAGE = 2;
+  FOLLOW_PAGE = 3;
+}
+
+service FlowFansTopLaunchOrderRpcService {
+  rpc CreateOrder(FlowCreateFansTopOrderRequest) returns(FlowCreateFansTopOrderResponse);
+  rpc GetCpmInfo(EmptyRequest) returns (FlowFansTopCpmResponse);
+}

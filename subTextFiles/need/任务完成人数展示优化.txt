@@ -1,0 +1,132 @@
+
+
+
+
+
+
+明天跑task。4878-  使用校验task
+
+
+
+
+
+cms 
+resolver
+task
+taskValidate
+
+
+https://wiki.corp.kuaishou.com/pages/viewpage.action?pageId=892502875
+
+
+creatorGrowthService1.  
+如果加入梯度 
+
+那抹表设计
+
+
+
+
+5497:   654210669,  1851313019   ,1031216616 ,
+5507:   339332994,
+5506: 1284803246, 141361957,408161937,1331994107
+5051: 1588938205,1391181079,370502919,302499610,1073440639,2016968396,742404141,976312255,1406216417,1013830008,1054513339,6967327,976312255,976312255,976312255,976312255,976312255,976312255,
+5497: 654210669,      ,
+5507: 339332994,
+5506: 1284803246, 141361957,408161937,1331994107
+5051: 1588938205,1391181079,370502919,302499610,1073440639,2016968396,742404141,976312255,1406216417,1013830008,1054513339,6967327,976312255,976312255,976312255,976312255,976312255,976312255,v
+800986815,2179757699,878703685,976312255,14681,91444054,
+5506:1560472425,23623179,23623179 ,408161937,1429773507,163207863,1798268118,712026218,1357462339,
+
+,4771,4769,4770,
+
+5497, 5507,5506,5051,5497,5507,5506,5051,4771,4769,4770,
+
+
+任务梯度用户展示表， 任务用户展示表
+CREATE TABLE `gifshow`.`operation_task_group_user_show` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `task_id` bigint(20) unsigned NOT NULL COMMENT '任务id',
+  `group_id` bigint(20) unsigned NOT NULL COMMENT '条件组id',
+  `count` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '完成人数',
+  `ext_params` json NOT NULL COMMENT '扩展字段',
+  `create_time` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_taskId_groupId` (`task_id`,`group_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COMMENT='任务梯度用户展示表';
+
+CREATE TABLE `gifshow`.`operation_task_user_show` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `task_id` bigint(20) unsigned NOT NULL COMMENT '任务id',
+  `count` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '完成人数',
+  `ext_params` json NOT NULL COMMENT '扩展字段',
+  `create_time` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_taskId` (`task_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='任务用户展示表';
+
+
+
+ operationTaskUserCountService.addCountByActivity(activityId, OperationActivityConstants.ONE);
+                        logger.info("[UserProgressFinishedUpdateDataBusResolver] activityId={}, userId={}, addCount={}",
+                                activityId, userId, OperationActivityConstants.ONE);
+
+监控operation_activity_user_progress_detail
+
+变化，  status 1->2   维度。activity_id group_id user_id status = 2
+
+before ： status = 1 
+
+after ： status = 2 
+
+if (before != 1 || after != 2) {
+	return;
+}
+afterData. updateTime 
+// 普通和 策略都可以
+count = operationActivityUserProgressDetailService.getActivityIdAndUserIdAndFinished(activityId, userId, 2);
+		status = 2 and updateTime <= updateTime
+
+	// 相当于用户完成了这个任务
+	if (count == 1) {
+		这时候，operationUserCount + 1	
+	} 
+
+
+if (sub_id != 0) {
+	return;
+}
+// 只有基础任务 梯度    周期变化
+count = operationActivityUserProgressDetailService.getActivityIdAndGroupIdAndUserIdAndFinished(activityId, groupId, userId, 2);
+		= 2
+	if (count == 1) {
+		这时候，operationGroupUserCount + 1
+	}
+
+
+
+
+
+
+
+
+2. es   count 功能
+
+还是 resolver。 监听 userProgressDetail。
+
+insert  ，，， 插入userProgressDetail。 并且插入 es
+
+delete。      一样
+
+update ，     更新即可
+
+
+
+在查询梯度的那块，，写一个service 以供从es中楼数据
+完成  activityId userId 2 去重
+梯度完成，  activityId, groupId, userId 2 去重
+
+
+去重 功能 由 es实现

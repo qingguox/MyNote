@@ -1,0 +1,45 @@
+
+
+
+
+
+
+
+直播间评论人数
+
+
+两个key 一个周期下     一个周期下单场
+
+下面这两个和评论一样，不过在进行之前需要 去掉sendMessage ， 判断是否已经存在
+key = getHashKey(context,dto);   
+OPERATION_USER_ACTIVITY_INDICATOR.toKeyAppend(context.getAuthorId(), dto.getBusinessId(), dto.getDataKey().getCycleId(),
+dto.getIndicatorId());
+
+
+
+
+
+operationActivity, key, 是否存在，
+单场，   
+key = userId(用户)+ taskId+ livestreamID+ indicator+cycleId
+setnx
+max
+
+周期  
+key = userId(用户)+ taskId+ indicator+cycleId
+
+sum
+
+
+
+String resdisKey = genKey();
+Long setnx = OperationRedisHelper.setnx(operationActivity, redisKey, value);
+if (setnx == OperationActivityConstants.ONE) {
+    OperationRedisHelper.pexpire(OperationJedisCluster.operationActivity, redisKey,
+            dto.getEndTime() - dto.getStartTime() + TimeUnit.SECONDS.toMillis(10))
+}
+
+
+
+
+

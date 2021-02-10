@@ -1,0 +1,71 @@
+
+
+
+
+
+需求api：
+
+
+
+
+
+
+注意： 在OperationRewardCategoryEnum 下新增一个粉条流量 替换助推奖励
+
+	新增一个enum，， 作者/作品推广。 1 / 2
+
+	OperationRewardAddDTO 中添加字段 putVersion  1 2 3 主app 极速版 设置版
+								   usageType
+
+ 
+任务系统的流程
+
+
+operation_activity_user_state :  任务用户状态表
+operation_activity_user_progress:  任务用户进度表   任务加了周期。如果完成一个周期，那么在state中会在 finished+=1
+operation_activity_user_progress_detail: 任务用户进度明细表：  对应任务下一个等级（包含多个条件和 奖励），完成多个等级，就会去进度表，标记status为2结束。
+operation_activity_user_progress_item: 任务用户进度条件表，对应一个等级下的一个条件，如果一个等级下多个条件完成。修改明细表，status =2，此时注意会发送下发这个等级下的奖励消息。 并且向上检查。修改状态。
+
+OperationActivityUserProgressProcessServiceImpl
+
+
+
+直播流量 和 作品曝光 和 粉条 
+
+在进行展示的时候，，需要先入库，，，注意是结算完成， 
+OperationActivitySettlementChangeConsumers
+发送给流量中台，OperationRewardBoostHandler 他们计算，然后发送给
+OperationActivityBoostRewardDetailConsumer
+
+我们呢新建一个consumer。，把他们呢给的数据入库，  包含奖励人数，奖励类型，奖励数量，奖励金额
+
+
+
+未完成： 确定flame的粉条换算比例，算成钱，放入库里
+
+问题： 
+1.  flame 各个修改 
+2.  flameconsumer那块，需要怎么弄 ？？？ 
+
+
+unique_id = 前缀 + dtailid+userId
+
+
+userid+ordreId更新 
+
+
+
+1. RewardConsumer
+2. settlementChangeConsuemr 
+3. operationActivityBoostExtendDetailConsumer
+4. cmp-api
+5. operaitonActivityRewardTask
+
+
+
+
+
+
+
+
+
